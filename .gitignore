@@ -31,6 +31,10 @@ dist-ssr
 __screenshots__
 .vitest-attachments
 
+# planning
+# The methodology rules (specs/*.md) are committed; plan for every version don't.
+specs/versions/
+
 # stuff
 
 issues.md

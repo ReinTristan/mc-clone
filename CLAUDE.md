@@ -14,6 +14,7 @@ pnpm test       # vitest in watch mode
 pnpm test:run   # vitest, single run
 pnpm preview    # preview the production build
 pnpm start      # serve dist/ as an SPA on $PORT
+pnpm spec:check # cross specs/versions/'s acceptance criteria against the tests citing them
 ```
 
 Biome (not ESLint/Prettier) is the only linter/formatter; `biome.json` is the source of truth for style — read it instead of guessing. `.vscode/settings.json` runs it on save with `source.fixAll.biome` and `source.organizeImports.biome`.
@@ -42,9 +43,39 @@ Three rules that cost time to rediscover:
 
 R3F/cannon behaviour beyond "it mounts" (movement, physics, placing and breaking blocks, pointer lock) is **manual QA**, not covered by the suite.
 
+## Spec-driven development
+
+The plan lives in `specs/`, split by what is public and what is not:
+
+| Path | Committed? | Language | What it is |
+|---|---|---|---|
+| `specs/design.md` | yes | EN | How a criterion is written — format, the six rules, `spec:check`'s contract |
+| `specs/workflow.md` | yes | EN | Definition of Done, versioning convention, roles |
+| `specs/roadmap.md` | yes | EN | Current version and the next one. Short horizon on purpose |
+| `specs/decisions.md` | yes | EN | Decisions taken and rejected, plus the performance baseline table |
+| `specs/versions/backlog.md` | **no** | ES | The O#/P#/N# registry, the full version map, hard dependency rules |
+| `specs/versions/<v>/tasks.md` | **no** | ES | That version's criteria — the spec you implement against |
+| `specs/versions/<v>/context.md` | **no** | ES | Its reasoning: alternatives, risks, what it depends on |
+
+**Read `specs/design.md` and `specs/workflow.md` before planning any version.** They are the authority; this section is a pointer, not a copy. The rules that bite most often:
+
+- **Implement against the criterion**, not against the version's prose description. The prose is allowed to age; the criterion isn't.
+- **Every test cites its criterion in the test name**: `it('AC-0.5.0-6 · does not re-render on WASD', …)`. That citation is the only link between spec and suite, and it's what `pnpm spec:check` reads.
+- **Targets pointing at files that don't exist yet are normal** — the criterion is written before the test. That's a pending, not an error.
+- **Never renumber an ID**, and never move one to another version's folder — `spec:check` rejects both.
+- **Closed versions (0.4.0–0.4.2) carry no IDs.** They predate the format. Don't retrofit them.
+- **Manual QA has to be asked for, not assumed.** Before declaring any version ready, list ReinTristan the pending 🖐️ criteria and wait for them to be ticked. The QA for 0.4.1 and 0.4.2 was actually performed and never written down, and the record was lost — that's why this is step 6 of the Definition of Done.
+- **Anything spanning several versions goes in `backlog.md`**, and the version's `context.md` links to it. Don't duplicate it into both.
+- New durable decisions go in `specs/decisions.md` — but only what is already true of the code. It's public, so it must not leak the plan.
+
 ## Environment
 
-`.env` (gitignored) holds `VITE_CURRENT_VERSION`, rendered by `src/components/UI/HUD/Info.tsx` on the main menu. `index.html` also substitutes `%VITE_DOMAIN_URL%` into the og:url meta tag. Bump `VITE_CURRENT_VERSION` alongside `package.json` `version` when releasing.
+`.env` (gitignored) holds two version numbers, different on purpose:
+
+- `VITE_CURRENT_VERSION` — the **released** version, rendered by `src/components/UI/HUD/Info.tsx` on the main menu. Bump it alongside `package.json` `version` when releasing.
+- `SPEC_VERSION` — the version **being implemented**, read by `pnpm spec:check` (which runs with `--env-file-if-exists=.env`). It moves when a version is opened, not when it's tagged, so during 0.4.3's development `VITE_CURRENT_VERSION` still reads `0.4.2`. A CLI argument overrides it: `pnpm spec:check 0.6.0`.
+
+`index.html` also substitutes `%VITE_DOMAIN_URL%` into the og:url meta tag.
 
 ## Architecture
 
