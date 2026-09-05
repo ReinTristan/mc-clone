@@ -3,6 +3,8 @@
 All notable changes to MC-Clone, newest first.
 
 > **On the older entries:** versions from 0.4.0 onward are written as they ship. Everything before that was reconstructed from the commit history. Entries marked **†** were never bumped or tagged at the time — their number was assigned retroactively so the history reads in order, and their date is when the work landed rather than when it was released.
+>
+> **[Project and tooling](#project-and-tooling)**, at the end of this file, collects changes that don't affect the game and don't belong to any version.
 
 ---
 
@@ -161,3 +163,19 @@ First playable version — the voxel sandbox from the [freeCodeCamp](https://git
 - Place and break blocks.
 - A texture selector and five block types.
 - An infinite-looking ground plane.
+
+---
+
+## Project and tooling
+
+Changes to how the project is built and planned. Nothing here affects the game, and none of it belongs to a version — these land whenever they land, newest first.
+
+### 2026-08-16 — Planning moved to `specs/`
+
+The plan used to live in one large local file that mixed four different things: how a spec is written, how a version is closed, what was decided and why, and what is left to do. It is now split by what each part actually is — the method is committed, the plan itself is not.
+
+- `specs/design.md` — how an acceptance criterion is written, and what the checker rejects.
+- `specs/workflow.md` — the Definition of Done and the versioning convention.
+- `specs/roadmap.md` — what is being built now and next.
+- `specs/decisions.md` — why the code is the way it is, including the options that were rejected and the performance baseline table.
+- `pnpm spec:check` cross-references the acceptance criteria against the tests citing them, and reads the version in progress from `SPEC_VERSION`.
