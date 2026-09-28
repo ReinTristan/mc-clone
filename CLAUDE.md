@@ -15,6 +15,7 @@ pnpm test:run   # vitest, single run
 pnpm preview    # preview the production build
 pnpm start      # serve dist/ as an SPA on $PORT
 pnpm spec:check # cross specs/versions/'s acceptance criteria against the tests citing them
+pnpm spec:test  # the checker's own tests (node --test, not vitest) — added in 0.4.4
 ```
 
 Biome (not ESLint/Prettier) is the only linter/formatter; `biome.json` is the source of truth for style — read it instead of guessing. `.vscode/settings.json` runs it on save with `source.fixAll.biome` and `source.organizeImports.biome`.
@@ -64,6 +65,7 @@ The plan lives in `specs/`, split by what is public and what is not:
 - **Targets pointing at files that don't exist yet are normal** — the criterion is written before the test. That's a pending, not an error.
 - **Never renumber an ID**, and never move one to another version's folder — `spec:check` rejects both.
 - **Closed versions (0.4.0–0.4.2) carry no IDs.** They predate the format. Don't retrofit them.
+- **The checker's own tests live in `scripts/spec/`, not `test/`**, and run with `pnpm spec:test` (Node's native runner). Keeping them out of `test/` is what stops their fixture IDs from being read as citations by `spec:check`.
 - **Manual QA has to be asked for, not assumed.** Before declaring any version ready, list ReinTristan the pending 🖐️ criteria and wait for them to be ticked. The QA for 0.4.1 and 0.4.2 was actually performed and never written down, and the record was lost — that's why this is step 6 of the Definition of Done.
 - **Anything spanning several versions goes in `backlog.md`**, and the version's `context.md` links to it. Don't duplicate it into both.
 - New durable decisions go in `specs/decisions.md` — but only what is already true of the code. It's public, so it must not leak the plan.

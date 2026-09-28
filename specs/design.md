@@ -116,4 +116,6 @@ It **does not** fail on a 🧪 target pointing at a file that doesn't exist yet,
 
 The version being worked on comes from `SPEC_VERSION` (see [workflow.md](workflow.md)); a first CLI argument overrides it. `--all` lists every version instead of just the one in progress.
 
-Run it before calling a version done.
+Its own tests live in `scripts/spec/` and run with `pnpm spec:test` (Node's native `node --test`, not vitest). They are deliberately outside `test/`, so the fixture IDs they contain are never scanned as citations.
+
+Run both before calling a version done.
