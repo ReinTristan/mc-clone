@@ -29,7 +29,7 @@ The gate **every** version crosses before being tagged. In order:
 1. `pnpm biome` clean.
 2. `pnpm build` green. ⚠️ The script is `tsc -b`, **not** `tsc`: with a root config of `"files": []` + `references`, plain `tsc` typechecks nothing at all and exits 0. If that flag ever disappears, the build has stopped checking types.
 3. `pnpm test:run` green.
-4. `pnpm spec:check` with no errors: no ghost IDs, no criteria ticked without a test.
+4. `pnpm spec:check` with no errors: no ghost IDs, no criteria ticked without a test. And `pnpm spec:test` green — the checker's own tests, run with Node's native runner, since the checker is what decides whether a version can close.
 5. **Every 🧪 `AC-` of the version ticked**, each with a test citing its ID.
 6. **Every 🖐️ `AC-` executed and ticked by ReinTristan.** → Claude **does not declare a version ready** without first listing the pending 🖐️ criteria and waiting for them to be ticked. This is not a formality: the manual QA for 0.4.1 and 0.4.2 was performed and never written down, and the record was lost. That is why this is step 6.
 7. The version's `D-` decisions taken — and written down in [decisions.md](decisions.md) with their reasoning if they are durable, or in the private backlog if they are not.
