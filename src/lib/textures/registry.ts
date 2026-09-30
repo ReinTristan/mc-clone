@@ -1,5 +1,7 @@
 import type { CanvasTexture, Texture } from 'three'
 import { blocks, FALLBACK_BLOCK_ID } from '@/data/blocks'
+import { setFavicon } from '@/lib/textures/favicon'
+import { renderIsoIcon } from '@/lib/textures/iso'
 import { composeFace, createFaceTexture } from '@/lib/textures/render'
 import { sprites } from '@/lib/textures/sprites'
 import {
@@ -16,7 +18,7 @@ const defs: BlockDef[] = blocks
 
 export interface BlockTextures {
   faces: Record<Face, Texture>
-  /** dataURL de la cara superior, para el <img> de la hotbar */
+  /** dataURL del cubo isométrico, para el <img> de la hotbar y el favicon */
   iconUrl: string
   type: BlockDef['type']
   opacity: number
@@ -33,6 +35,17 @@ let loading: Promise<void> | null = null
 
 const resolveFace = (block: BlockDef, face: Face): FaceSpec =>
   block.faces[face] ?? block.faces.all
+
+/** El bloque cuyo icono iso es el favicon del sitio. */
+const FAVICON_BLOCK = 'grass'
+
+function findBlock(name: string) {
+  const block = defs.find((def) => def.name === name)
+  if (!block) {
+    throw new Error(`No hay un bloque "${name}" en blocks.ts`)
+  }
+  return block
+}
 
 // Dos caras con el mismo sprite + tinte + overlays son la misma imagen: se
 // componen una vez y comparten CanvasTexture. Con los 9 bloques actuales esto
@@ -62,9 +75,17 @@ function build() {
     for (const face of FACES) {
       faces[face] = compose(resolveFace(block, face)).texture
     }
+    // Las caras ya están en la caché: el icono no compone nada nuevo. Qué
+    // lateral va a cada lado da igual hoy (los 4 lados de cada bloque son
+    // iguales), pero queda fijado: izquierda = front, derecha = right.
+    const icon = renderIsoIcon({
+      top: compose(resolveFace(block, 'top')).canvas,
+      left: compose(resolveFace(block, 'front')).canvas,
+      right: compose(resolveFace(block, 'right')).canvas,
+    })
     registry.set(block.id, {
       faces,
-      iconUrl: compose(resolveFace(block, 'top')).canvas.toDataURL(),
+      iconUrl: icon.toDataURL(),
       type: block.type,
       opacity: block.opacity ?? 1,
     })
@@ -90,13 +111,20 @@ function build() {
  * 3. **Bonus `<StrictMode>`:** el doble montaje en dev no compone dos juegos
  *    de texturas.
  *
+ * El favicon se fija aquí dentro y no en un efecto del gate por lo mismo: la
+ * promesa memoizada garantiza que corre una sola vez, justo cuando el registry
+ * termina, y usa el mismo `iconUrl` que la hotbar (no una copia).
+ *
  * Hoy `build()` es 100% síncrono y la promesa es arquitectura, no necesidad.
  * Está así para que cuando generar texturas tarde de verdad (featurs para: 0.7.0: chunks y
  * muchos más bloques) baste con meter un `await` dentro de la IIFE, sin tocar
  * ni esta firma ni el gate.
  */
 export function loadAllTextures(): Promise<void> {
-  loading ??= (async () => build())()
+  loading ??= (async () => {
+    build()
+    setFavicon(getBlockTextures(findBlock(FAVICON_BLOCK).id).iconUrl)
+  })()
   return loading
 }
 
@@ -116,13 +144,9 @@ export function getBlockTextures(id: number): BlockTextures {
  * compartir instancia ni `Source`. Componer un 16×16 de más no cuesta nada.
  */
 export function createGroundTexture(): CanvasTexture {
-  const grass = defs.find((block) => block.name === 'grass')
-  if (!grass) {
-    throw new Error(
-      'No hay un bloque "grass" del que sacar la textura del suelo'
-    )
-  }
-  return createFaceTexture(composeFace(resolveFace(grass, 'top'), sprites))
+  return createFaceTexture(
+    composeFace(resolveFace(findBlock('grass'), 'top'), sprites)
+  )
 }
 
 /** Los 9 bloques con los que arranca la hotbar, en orden. */
