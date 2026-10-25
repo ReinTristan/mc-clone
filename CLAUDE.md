@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Commands
 
-Package manager is pnpm (v11, Node >= 24).
+Package manager is pnpm (v12, Node >= 24.22.1).
 
 ```bash
 pnpm dev        # vite dev server, exposed on the LAN (--host)
@@ -23,6 +23,8 @@ Biome (not ESLint/Prettier) is the only linter/formatter; `biome.json` is the so
 **Run `pnpm biome` after creating or editing any file.** Formatting differences are not editor diagnostics, so a misformatted file looks clean until someone saves it in VS Code and gets a whole-file diff.
 
 `pnpm-workspace.yaml` sets `minimumReleaseAge: 1440` (packages must be 24h old before install), pinned security `overrides`, and `onlyBuiltDependencies` (pnpm blocks install scripts by default; `playwright` needs its own to resolve browsers). Keep all three in mind when adding or bumping dependencies.
+
+**`pnpm-lock.yaml` must match `package.json` in every commit.** The Railway deploy installs with `--frozen-lockfile` (pnpm enables it by default in CI), so a stale lockfile fails the deploy with `ERR_PNPM_FROZEN_LOCKFILE_WITH_OUTDATED_LOCKFILE`. Since pnpm 12 the lockfile also records pnpm itself (a `packageManagerDependencies` document at the top), so **changing `packageManager` is a lockfile change too**. That's what broke the 0.4.3 deploy: a hotfix bumped pnpm 11 → 12.15 in `package.json` only. After touching dependencies, `packageManager` or overrides, run `pnpm install` and commit the lockfile with it; `pnpm install --frozen-lockfile` locally is the check (Definition of Done step 11).
 
 ## Testing
 

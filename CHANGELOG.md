@@ -187,6 +187,12 @@ First playable version — the voxel sandbox from the [freeCodeCamp](https://git
 
 Changes to how the project is built and planned. Nothing here affects the game, and none of it belongs to a version — these land whenever they land, newest first.
 
+### 2026-10-25 — pnpm 12 and a Node security floor
+
+- `package.json` — Node now requires `>= 24.22.1`, after a recent Node CVE, and the project moved from pnpm 11 to pnpm 12.15.
+- `pnpm-lock.yaml` — regenerated. Since pnpm 12 the lockfile also records pnpm's own version, so the first deploy after the bump failed: the lockfile still came from pnpm 11, and the deploy installs with `--frozen-lockfile`.
+- `specs/workflow.md` — the Definition of Done gains a step: `pnpm install --frozen-lockfile` has to pass, and any change to `package.json` ships with its regenerated lockfile in the same commit.
+
 ### 2026-09-27 — Roadmap revised
 
 A full pass over the plan through 1.0.0. The order of the themes didn't change, but most of them gained steps, and one version was rethought from scratch.
