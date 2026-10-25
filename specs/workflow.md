@@ -36,6 +36,7 @@ The gate **every** version crosses before being tagged. In order:
 8. A new entry in [CHANGELOG.md](../CHANGELOG.md), written for players (what changes when you play), not for commits.
 9. [roadmap.md](roadmap.md) updated: the version moves to shipped, and the next one becomes current.
 10. Bump `version` in `package.json` **and** `VITE_CURRENT_VERSION` in `.env`; move `SPEC_VERSION` to the next version.
-11. Commit + tag by ReinTristan.
+11. `pnpm install --frozen-lockfile` passes. The deploy runs exactly that (pnpm turns frozen on by itself in CI), so a `pnpm-lock.yaml` out of sync with `package.json` breaks the deploy and nothing earlier on this list catches it. Since pnpm 12 the lockfile also records pnpm's own version from `packageManager`, so bumping pnpm counts as a lockfile change too. Any change to `package.json` — dependencies, `packageManager`, overrides — ships with the `pnpm install` that follows it, in the same commit. Hotfixes outside a version included.
+12. Commit + tag by ReinTristan.
 
 A criterion that isn't met doesn't get ticked: it moves to the next version **keeping its ID**, with a line saying where it came from.
