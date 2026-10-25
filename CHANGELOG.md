@@ -8,6 +8,23 @@ All notable changes to MC-Clone, newest first.
 
 ---
 
+## 0.4.3 — 2026-10-25 — Isometric icons
+
+The hotbar finally shows blocks instead of squares.
+
+**Added**
+- Hotbar icons are small 3D cubes — the top and two sides, each side shaded differently — instead of the flat top face. They're drawn from the same pixel art as the blocks in the world, when the game starts, so an icon can never drift from its block.
+- The browser tab has its own icon: a grass block, drawn by the game itself once textures load. It replaces Vite's placeholder logo.
+- Sharing a link to the game now shows a grass block in the preview, instead of Vite's logo.
+- The README shows all nine blocks.
+- A texture gallery for reviewing the art. It only exists in the dev server (`pnpm dev`) and never reaches the game you play: every block with its sprites and its six faces, each one tiled 3×3 so a pattern that breaks at the seam shows up at a glance. It's also where the social preview and the README image are downloaded from.
+- 88 tests, up from 69.
+
+**Changed**
+- Hotbar icons are bigger and pixel-sharp instead of blurred, and the slot numbers are larger and easier to read.
+
+---
+
 ## 0.4.2 — 2026-08-14
 
 Groundwork. Mostly invisible from the outside, except for one save bug that wasn't.
@@ -169,6 +186,13 @@ First playable version — the voxel sandbox from the [freeCodeCamp](https://git
 ## Project and tooling
 
 Changes to how the project is built and planned. Nothing here affects the game, and none of it belongs to a version — these land whenever they land, newest first.
+
+### 2026-09-27 — Roadmap revised
+
+A full pass over the plan through 1.0.0. The order of the themes didn't change, but most of them gained steps, and one version was rethought from scratch.
+
+- `specs/roadmap.md` — 0.4.3 is no longer a Node script that writes PNGs. Everything happens in the browser: isometric icons for the hotbar, a favicon generated from the same code, and a texture gallery that only exists in the dev server. A short cleanup version, 0.4.4, now sits before 0.5.x. Water and a day-night cycle left the "later" list, because they now have a version.
+- `specs/workflow.md`, `specs/design.md` — the Definition of Done adds `pnpm spec:test`, the spec checker's own tests. They run with Node's native test runner instead of vitest, and live outside `test/` so their example IDs are never read as real citations. The script itself arrives with 0.4.4.
 
 ### 2026-08-16 — Planning moved to `specs/`
 
