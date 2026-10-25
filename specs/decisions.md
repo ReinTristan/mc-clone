@@ -14,6 +14,12 @@ Every texture is drawn at runtime onto a 16×16 canvas from pixel art declared i
 
 This started as a licensing cleanup and turned into the most interesting part of the codebase: adding a block is two edits (a sprite, an entry in the block list), tints and overlays are declarative, and the whole pipeline is testable pixel by pixel.
 
+### The only PNGs in the repo belong to the site, and they come from the gallery
+
+The game itself still ships no image files: hotbar icons and the favicon are `data:` URLs generated at runtime from the same isometric projection. Two things genuinely need a file on disk — `public/og-image.png` (social networks want a served PNG, not a `data:` URL) and `docs/contact-sheet.png` (the README) — and both are downloaded from the texture gallery and committed.
+
+The gallery exists only in `pnpm dev`; the production build contains neither its code nor its button. The cost of this choice is manual: **when a sprite changes, download both files again**, or the README and the social preview drift from the game. A Node exporter that wrote them automatically was considered and dropped — Node has no `<canvas>`, so it meant either rewriting the pixel pipeline without the DOM or adding a native canvas dependency, all to save two clicks.
+
 ### One sprite per texture — variation goes through `tint`
 
 No sprite variants. When a block needs to exist in several colors, it is one grayscale sprite plus N tint values, the way Minecraft handles grass. N greens cost zero extra artwork.

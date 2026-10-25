@@ -1,4 +1,4 @@
-import { describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 import { render } from 'vitest-browser-react/pure'
 import { MainMenu } from '@/components/UI/Menus/MainMenu'
 import { useMenuStore } from '@/store/useMenuStore'
@@ -83,5 +83,42 @@ describe('with saved worlds', () => {
     expect(world().cubes).toHaveLength(1)
     expect(world().cubes[0].textureId).toBe(5)
     expect(menu().mainMenu).toBe(false)
+  })
+})
+
+describe('texture gallery button', () => {
+  afterEach(() => {
+    vi.unstubAllEnvs()
+  })
+
+  it('AC-0.4.3-14 · shows the Texture Gallery button in dev', async () => {
+    const screen = await render(<MainMenu />)
+
+    await expect
+      .element(screen.getByRole('button', { name: 'Texture Gallery' }))
+      .toBeVisible()
+  })
+
+  // En producción Vite reemplaza `import.meta.env.DEV` por `false` al compilar;
+  // aquí se simula en runtime.
+  it('AC-0.4.3-14 · hides the Texture Gallery button outside dev', async () => {
+    vi.stubEnv('DEV', false)
+    const screen = await render(<MainMenu />)
+
+    await expect
+      .element(screen.getByRole('button', { name: 'New World' }))
+      .toBeVisible()
+    expect(
+      screen.getByRole('button', { name: 'Texture Gallery' }).elements()
+    ).toHaveLength(0)
+  })
+
+  it('opens the gallery without leaving the main menu', async () => {
+    const screen = await render(<MainMenu />)
+
+    await screen.getByRole('button', { name: 'Texture Gallery' }).click()
+
+    expect(menu().textureMenu).toBe(true)
+    expect(menu().mainMenu).toBe(true)
   })
 })
