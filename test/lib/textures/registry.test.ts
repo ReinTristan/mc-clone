@@ -1,6 +1,7 @@
 import { CanvasTexture } from 'three'
 import { beforeAll, describe, expect, it } from 'vitest'
 import { FALLBACK_BLOCK_ID } from '@/data/blocks'
+import { ISO_ICON_SIZE } from '@/lib/textures/iso'
 import {
   createGroundTexture,
   getBlockTextures,
@@ -51,10 +52,36 @@ describe('getBlockTextures', () => {
     expect(getBlockTextures(9999)).toBe(getBlockTextures(FALLBACK_BLOCK_ID))
   })
 
-  it('exposes a PNG iconUrl the hotbar <img> can use', () => {
+  it('AC-0.4.3-12 · exposes a runtime-generated PNG data: iconUrl', () => {
     const { iconUrl } = getBlockTextures(DIRT_ID)
     expect(iconUrl.startsWith('data:image/png;base64,')).toBe(true)
     expect(iconUrl.length).toBeGreaterThan(100)
+  })
+
+  // Los únicos PNG del repo son los del sitio (`public/`, `docs/`), nunca los
+  // del juego: todo lo que pinta el runtime sale de `sprites.ts`.
+  it('AC-0.4.3-12 · ships no image files under src/', () => {
+    const images = import.meta.glob('/src/**/*.{png,jpg,jpeg,webp,gif}')
+    expect(Object.keys(images)).toEqual([])
+  })
+
+  // La mitad automática de AC-0.4.3-11: el icono es el cubo iso de 64×64 con
+  // las esquinas transparentes, no la cara superior plana de 16×16.
+  it('renders the iconUrl as the isometric cube, not the flat top face', async () => {
+    const image = new Image()
+    image.src = getBlockTextures(GRASS_ID).iconUrl
+    await image.decode()
+    expect(image.naturalWidth).toBe(ISO_ICON_SIZE)
+    expect(image.naturalHeight).toBe(ISO_ICON_SIZE)
+
+    const canvas = document.createElement('canvas')
+    canvas.width = ISO_ICON_SIZE
+    canvas.height = ISO_ICON_SIZE
+    const ctx = canvas.getContext('2d')
+    if (!ctx) throw new Error('no 2d context')
+    ctx.drawImage(image, 0, 0)
+    expect(ctx.getImageData(0, 0, 1, 1).data[3]).toBe(0)
+    expect(ctx.getImageData(32, 16, 1, 1).data[3]).toBe(255)
   })
 
   it('marks glass as transparent and everything else as standard', () => {

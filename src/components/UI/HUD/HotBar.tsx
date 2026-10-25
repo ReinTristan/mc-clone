@@ -15,15 +15,15 @@ export const HotBar = () => {
           key={pos}
           className={`relative flex size-16 items-center justify-center border-4 border-neutral-500 bg-transparent`}
         >
-          <span className='absolute top-1 right-1 text-neutral-400 text-xs'>
+          <span className='absolute -top-1 right-0.5 z-10 text-lg text-white'>
             {pos}
           </span>
-          <div className='size-1/2 object-contain'>
+          <div className='size-4/5 object-contain'>
             {slots[pos - 1] && (
               <img
                 src={getBlockTextures(slots[pos - 1]).iconUrl}
                 alt={`slot${pos}`}
-                className='size-full'
+                className='size-full [image-rendering:pixelated]'
               />
             )}
           </div>

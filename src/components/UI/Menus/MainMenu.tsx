@@ -6,6 +6,7 @@ export const MainMenu = () => {
   const setWorld = useWorldStore((state) => state.setWorld)
   const totalWorlds = useWorldStore((state) => state.totalWorlds)
   const setMainMenu = useMenuStore((state) => state.setMainMenu)
+  const setTextureMenu = useMenuStore((state) => state.setTextureMenu)
   const [worldSelection, setWorldSelection] = useState(false)
   return (
     <>
@@ -30,6 +31,14 @@ export const MainMenu = () => {
               >
                 Load World
               </button>
+              {import.meta.env.DEV && (
+                <button
+                  className='cursor-pointer bg-neutral-400 p-4 font-bold text-5xl hover:bg-neutral-500'
+                  onClick={() => setTextureMenu(true)}
+                >
+                  Texture Gallery
+                </button>
+              )}
             </>
           )}
 

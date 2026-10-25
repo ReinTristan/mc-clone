@@ -22,6 +22,14 @@ export interface FaceSpec {
   overlays?: OverlaySpec[]
 }
 
+// Las tres caras visibles del cubo iso, ya compuestas (lo que devuelve
+// `composeFace`). Qué cara del bloque va a cada lado lo decide quien las arma.
+export interface IsoFaces {
+  top: HTMLCanvasElement
+  left: HTMLCanvasElement
+  right: HTMLCanvasElement
+}
+
 export interface BlockDef {
   id: number
   name: string

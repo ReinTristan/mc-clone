@@ -5,10 +5,10 @@ import { FaceSpec, SpriteDef } from '@/types/textures'
 export const SPRITE_SIZE = 16
 const TRANSPARENT_CHAR = '.'
 
-function createCanvas() {
+export function createCanvas(size = SPRITE_SIZE) {
   const canvas = document.createElement('canvas')
-  canvas.width = SPRITE_SIZE
-  canvas.height = SPRITE_SIZE
+  canvas.width = size
+  canvas.height = size
   const ctx = canvas.getContext('2d')
   if (!ctx) {
     throw new Error('Could not get 2d context for sprite rendering')

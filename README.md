@@ -2,6 +2,8 @@
 
 MC-Clone is a simple voxel sandbox — a Minecraft-inspired learning project built with TypeScript and Three.js — based on [Midudev's](https://github.com/midudev) video on [YouTube](https://www.youtube.com/watch?v=dm7nfe3bOE4) from the original [freecodecamp's tutorial](https://www.freecodecamp.org/news/code-a-minecraft-clone-using-react-and-three-js/).
 
+![The nine blocks of MC-Clone, drawn as isometric icons](docs/contact-sheet.png)
+
 ## Improvements
 
 - Added TypeScript support
