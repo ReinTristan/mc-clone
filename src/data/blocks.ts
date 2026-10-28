@@ -2,8 +2,7 @@ import type { BlockDef } from '@/types/textures'
 
 // Verde propio del césped. Se multiplica sobre los sprites en grises al componer
 // la textura, igual que Minecraft tinta su pasto en gris por bioma. El día que
-// haya varios verdes serán varios valores de esta constante, no varios sprites
-// (ver "Mis puntos" 2 en issues.md).
+// haya varios verdes serán varios valores de esta constante, no varios sprites.
 const GRASS_TINT = '#6d9e46'
 
 // Los ids son el contrato con los mundos ya guardados: ICube.textureId se

@@ -155,9 +155,12 @@ const parseTests = (): Map<string, string[]> => {
   const cited = new Map<string, string[]>()
   if (!existsSync(TEST_DIR)) return cited
 
-  const files = readdirSync(TEST_DIR, { recursive: true, encoding: 'utf8' })
-    .filter((file) => /\.test\.tsx?$/.test(file))
-    .map((file) => join(TEST_DIR, file))
+  // Solo archivos: cuando un test falla en browser mode, vitest guarda la
+  // captura en `__screenshots__/<archivo>.test.ts/`, una carpeta que casa con
+  // el patrón y que `readFileSync` no puede leer.
+  const files = readdirSync(TEST_DIR, { recursive: true, withFileTypes: true })
+    .filter((entry) => entry.isFile() && /\.test\.tsx?$/.test(entry.name))
+    .map((entry) => join(entry.parentPath, entry.name))
 
   for (const file of files) {
     const source = readFileSync(file, 'utf8')

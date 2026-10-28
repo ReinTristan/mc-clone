@@ -25,7 +25,9 @@ export function GameScene() {
             </Physics>
           </>
         )}
-        <Stats />
+        {/* Solo en dev y dentro del mundo: en el menú no mide nada útil, y el
+            build de producción lo elimina entero. */}
+        {import.meta.env.DEV && !mainMenu && <Stats />}
       </Canvas>
       {!mainMenu && !pauseMenu && <CrossHair />}
     </>

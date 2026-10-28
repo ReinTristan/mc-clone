@@ -6,8 +6,8 @@ import type { SpriteDef } from '@/types/textures'
 //
 // Los sprites en escala de grises (grass_block_top, grass_block_side_overlay)
 // NO llevan color: se tintan con `FaceSpec.tint` al componer la cara. Ese es
-// el hueco por el que entran los verdes por bioma más adelante (ver issues.md,
-// "Mis puntos" 2) — variar el color es añadir tints, nunca duplicar sprites.
+// el hueco por el que entran los verdes por bioma más adelante — variar el
+// color es añadir tints, nunca duplicar sprites.
 
 const dirt: SpriteDef = {
   palette: {
