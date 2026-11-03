@@ -8,6 +8,20 @@ All notable changes to MC-Clone, newest first.
 
 ---
 
+## 0.4.4 — 2026-10-28 — Cleanup
+
+Housekeeping before the next big step. One thing you'll notice: the frame-rate panel in the corner is gone.
+
+**Removed**
+- The performance panel no longer shows up on the main menu, and it never reaches the game you play — it only exists in the dev server, once you're in a world.
+- Two libraries the game stopped using a long time ago.
+
+**Project**
+- The tool that checks every planned feature against its tests now has tests of its own, and they already caught a bug: it crashed after any failed test run.
+- 93 tests in the game suite, up from 88, plus 12 for the checker.
+
+---
+
 ## 0.4.3 — 2026-10-25 — Isometric icons
 
 The hotbar finally shows blocks instead of squares.

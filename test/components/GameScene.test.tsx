@@ -21,6 +21,13 @@ const Sized = ({ children }: { children: ReactNode }) => (
 
 const canvasEl = (container: HTMLElement) => container.querySelector('canvas')
 
+// El panel de `<Stats>` lo cuelga drei de `document.body`, fuera del
+// contenedor del test, y trae sus propios `<canvas>` (uno por gráfica). Contar
+// los de la página entera es la forma de verlo sin tocar la escena.
+const pageCanvases = () => document.body.querySelectorAll('canvas').length
+
+const settle = () => new Promise((resolve) => setTimeout(resolve, 500))
+
 beforeAll(async () => {
   await loadAllTextures()
 })
@@ -61,5 +68,24 @@ describe('GameScene', () => {
       expect(canvasEl(screen.container)).not.toBeNull()
     })
     expect(screen.getByText('+').elements()).toHaveLength(0)
+  })
+
+  it('AC-0.4.4-3 · does not mount the Stats panel on the main menu', async () => {
+    const screen = await render(<GameScene />, { wrapper: Sized })
+
+    await vi.waitFor(() => {
+      expect(canvasEl(screen.container)).not.toBeNull()
+    })
+    // drei cuelga el panel un poco después de que exista el canvas, así que
+    // la ausencia solo vale tras darle tiempo de sobra para aparecer
+    await settle()
+    expect(pageCanvases()).toBe(1)
+
+    // control, en la misma escena: dentro del mundo (y en vitest `DEV` es
+    // true) el panel sí aparece, así que el detector y la espera sirven
+    useMenuStore.setState({ mainMenu: false })
+    await vi.waitFor(() => {
+      expect(pageCanvases()).toBeGreaterThan(1)
+    })
   })
 })
