@@ -33,7 +33,7 @@ Vitest in **browser mode** (added in 0.4.2): tests run inside a real headless ch
 - Config lives in `vitest.config.ts`, composed onto `vite.config.ts` with `mergeConfig` so plugins and the `@/*` alias are inherited. **Don't move it into `vite.config.ts`.**
 - Tests live in a root **`test/`** directory that mirrors `src/`'s categories (`test/store/`, `test/lib/textures/`, `test/components/UI/Menus/`, …), never colocated. `vitest.config.ts` pins that with `include: ['test/**/*.test.{ts,tsx}']`, so a `*.test.ts` left inside `src/` silently never runs.
 - Tests import production code **only through the `@/` alias** — that's what makes the split painless, since the alias resolves to an absolute path and doesn't care where the importer lives. Don't introduce `../../src/...` imports.
-- Typechecking them is `tsconfig.test.json` (its own project, `include: ["test"]`, same options as `tsconfig.app.json` plus the `@/*` paths), referenced from `tsconfig.json`. **`pnpm build` runs `tsc -b`, not `tsc`** — the root config is `"files": []` + references, so plain `tsc` checks *nothing at all* and exits 0. If you ever see that flag drop, the build has stopped typechecking.
+- Typechecking them is `tsconfig.test.json` (its own project, `include: ["test"]`, same options as `tsconfig.app.json` plus the `@/*` paths), referenced from `tsconfig.json`. **`pnpm build` runs `tsc -b`, not `tsc`** — the root config is `"files": []` + references, so plain `tsc` checks _nothing at all_ and exits 0. If you ever see that flag drop, the build has stopped typechecking.
 - **Test info are written in English** — the same split as the rest of the repo, where identifiers and UI copy are English and the explanations are Spanish. `pnpm test:run` output should read entirely in English.
 - `render` comes from **`vitest-browser-react/pure`** (not the default entry — only `/pure` exports `configure`, and mixing entries risks two module instances). It is **async**: `const screen = await render(<Foo />)`.
 - `test/setup.ts` enables `reactStrictMode` (matching `main.tsx`) and, before each test, clears `localStorage` and resets both stores — **in that order**, since `totalWorlds` is re-read from storage.
@@ -50,15 +50,15 @@ R3F/cannon behaviour beyond "it mounts" (movement, physics, placing and breaking
 
 The plan lives in `specs/`, split by what is public and what is not:
 
-| Path | Committed? | Language | What it is |
-|---|---|---|---|
-| `specs/design.md` | yes | EN | How a criterion is written — format, the six rules, `spec:check`'s contract |
-| `specs/workflow.md` | yes | EN | Definition of Done, versioning convention, roles |
-| `specs/roadmap.md` | yes | EN | Current version and the next one. Short horizon on purpose |
-| `specs/decisions.md` | yes | EN | Decisions taken and rejected, plus the performance baseline table |
-| `specs/versions/backlog.md` | **no** | ES | The O#/P#/N# registry, the full version map, hard dependency rules |
-| `specs/versions/<v>/tasks.md` | **no** | ES | That version's criteria — the spec you implement against |
-| `specs/versions/<v>/context.md` | **no** | ES | Its reasoning: alternatives, risks, what it depends on |
+| Path                            | Committed? | Language | What it is                                                                  |
+| ------------------------------- | ---------- | -------- | --------------------------------------------------------------------------- |
+| `specs/design.md`               | yes        | EN       | How a criterion is written — format, the six rules, `spec:check`'s contract |
+| `specs/workflow.md`             | yes        | EN       | Definition of Done, versioning convention, roles                            |
+| `specs/roadmap.md`              | yes        | EN       | Current version and the next one. Short horizon on purpose                  |
+| `specs/decisions.md`            | yes        | EN       | Decisions taken and rejected, plus the performance baseline table           |
+| `specs/versions/backlog.md`     | **no**     | ES       | The O#/P#/N# registry, the full version map, hard dependency rules          |
+| `specs/versions/<v>/tasks.md`   | **no**     | ES       | That version's criteria — the spec you implement against                    |
+| `specs/versions/<v>/context.md` | **no**     | ES       | Its reasoning: alternatives, risks, what it depends on                      |
 
 **Read `specs/design.md` and `specs/workflow.md` before planning any version.** They are the authority; this section is a pointer, not a copy. The rules that bite most often:
 
@@ -112,7 +112,7 @@ Adding a block: add sprite(s) to `sprites.ts`, then an entry to `blocks.ts`. Tha
 
 Two invariants: **block ids are the save-format contract** (`ICube.textureId` is serialized to localStorage — never renumber), and **order matters** (`initialBlockIds` is the first 9 entries, which seeds the hotbar).
 
-Loading is gated, not import-time: `App.tsx` wraps the tree in `<TexturesGate>`, which calls `use(loadAllTextures())` inside a `<Suspense fallback={<LoadingScreen />}>`. `loadAllTextures` memoizes the *promise object* at module level — see the long comment on it before touching that function; returning a fresh promise per call infinite-loops `use()`, and the `async` IIFE exists so a thrown `build()` memoizes its failure instead of retrying forever. `getBlockTextures` falls back to `FALLBACK_BLOCK_ID` (dirt) for unknown ids, and throws if called before the gate resolves.
+Loading is gated, not import-time: `App.tsx` wraps the tree in `<TexturesGate>`, which calls `use(loadAllTextures())` inside a `<Suspense fallback={<LoadingScreen />}>`. `loadAllTextures` memoizes the _promise object_ at module level — see the long comment on it before touching that function; returning a fresh promise per call infinite-loops `use()`, and the `async` IIFE exists so a thrown `build()` memoizes its failure instead of retrying forever. `getBlockTextures` falls back to `FALLBACK_BLOCK_ID` (dirt) for unknown ids, and throws if called before the gate resolves.
 
 Face composition is cached by `(texture, tint, overlays)`, so faces sharing a sprite share one `CanvasTexture`. `createGroundTexture()` deliberately bypasses that cache: the ground plane applies `RepeatWrapping ×100` and must not share a `Source` with the grass block.
 

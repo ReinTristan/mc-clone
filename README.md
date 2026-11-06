@@ -18,7 +18,6 @@ MC-Clone is a simple voxel sandbox — a Minecraft-inspired learning project bui
 - Improved performance and optimization
 - Inventory (Comming soon)
 
-
 ## Getting started
 
 Requires Node >= 24.22.1 and pnpm 12.

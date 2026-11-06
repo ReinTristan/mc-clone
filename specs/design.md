@@ -25,7 +25,7 @@ Because of that split, the templates below are the only place an outside reader 
 
 ## The format
 
-A criterion describes **observable behaviour** and says **where it is verified**. It never says how to implement it — the *how* belongs in the version's prose, which is where it can age without breaking anything.
+A criterion describes **observable behaviour** and says **where it is verified**. It never says how to implement it — the _how_ belongs in the version's prose, which is where it can age without breaking anything.
 
 ```markdown
 - [ ] `AC-0.5.0-6` Pressing WASD does not re-render `Player` → 🧪 `test/components/Player/Player.test.tsx`
@@ -40,12 +40,12 @@ Design **decisions** are not criteria — they are not met, they are taken — a
 
 ### Notation
 
-| Symbol | Meaning |
-|---|---|
-| 🧪 `path` | Verified by a vitest test. The path is a target and **may not exist yet** — the criterion is written before the test |
-| 🖐️ manual QA | Verified in the browser by ReinTristan. **It has to be asked for before closing the version**, never assumed |
-| `AC-x.y.z-n` | Acceptance criterion. Stable ID |
-| `D-x.y.z-n` | Open decision |
+| Symbol       | Meaning                                                                                                              |
+| ------------ | -------------------------------------------------------------------------------------------------------------------- |
+| 🧪 `path`    | Verified by a vitest test. The path is a target and **may not exist yet** — the criterion is written before the test |
+| 🖐️ manual QA | Verified in the browser by ReinTristan. **It has to be asked for before closing the version**, never assumed         |
+| `AC-x.y.z-n` | Acceptance criterion. Stable ID                                                                                      |
+| `D-x.y.z-n`  | Open decision                                                                                                        |
 
 ### The six rules
 
@@ -68,7 +68,7 @@ One per version. Mandatory as soon as the version has criteria.
 # 0.5.0 — Unified input
 
 One or two paragraphs: what the version is for and the direction it takes.
-This is the *how*, and it is allowed to age.
+This is the _how_, and it is allowed to age.
 
 **Decisiones**
 

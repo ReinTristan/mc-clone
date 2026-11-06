@@ -13,10 +13,12 @@ All notable changes to MC-Clone, newest first.
 Housekeeping before the next big step. One thing you'll notice: the frame-rate panel in the corner is gone.
 
 **Removed**
+
 - The performance panel no longer shows up on the main menu, and it never reaches the game you play — it only exists in the dev server, once you're in a world.
 - Two libraries the game stopped using a long time ago.
 
 **Project**
+
 - The tool that checks every planned feature against its tests now has tests of its own, and they already caught a bug: it crashed after any failed test run.
 - 93 tests in the game suite, up from 88, plus 12 for the checker.
 
@@ -27,6 +29,7 @@ Housekeeping before the next big step. One thing you'll notice: the frame-rate p
 The hotbar finally shows blocks instead of squares.
 
 **Added**
+
 - Hotbar icons are small 3D cubes — the top and two sides, each side shaded differently — instead of the flat top face. They're drawn from the same pixel art as the blocks in the world, when the game starts, so an icon can never drift from its block.
 - The browser tab has its own icon: a grass block, drawn by the game itself once textures load. It replaces Vite's placeholder logo.
 - Sharing a link to the game now shows a grass block in the preview, instead of Vite's logo.
@@ -35,6 +38,7 @@ The hotbar finally shows blocks instead of squares.
 - 88 tests, up from 69.
 
 **Changed**
+
 - Hotbar icons are bigger and pixel-sharp instead of blurred, and the slot numbers are larger and easier to read.
 
 ---
@@ -44,13 +48,16 @@ The hotbar finally shows blocks instead of squares.
 Groundwork. Mostly invisible from the outside, except for one save bug that wasn't.
 
 **Fixed**
+
 - Saving a brand-new world twice created **two** worlds instead of overwriting the first one. Hitting "Save World" a second time now updates the world you already saved.
 
 **Added**
+
 - The project has tests. They run in a real headless browser rather than a simulated DOM, which matters here: every texture is drawn onto a canvas at runtime, and a simulated DOM has no canvas to draw on. So the texture engine is now covered for real — including a pixel-level check that grass keeps its green top edge over a dirt side, the exact thing that was silently broken before 0.4.0.
 - 69 tests covering the texture engine, both stores, the menus and the hotbar, plus a check that the 3D scene mounts.
 
 **Changed**
+
 - Saving a world no longer forces the whole scene to re-render.
 - The main menu no longer writes to storage while drawing itself.
 
@@ -61,15 +68,18 @@ Groundwork. Mostly invisible from the outside, except for one save bug that wasn
 Naming, licensing and structure.
 
 **Added**
+
 - `LICENSE.md` (MIT). It covers the code **and** the block artwork, since every texture is pixel art written in TypeScript rather than an image file.
 - A License section in the README explaining exactly that.
 
 **Changed**
+
 - The project is now called **MC-Clone** — in the menu, the page title, the social preview tags, `package.json` and the README. Minecraft is still mentioned, but only as a description of what the project is inspired by.
 - New font: [Pixelify Sans](https://fontsource.org/fonts/pixelify-sans) (Open Font License), replacing the previous pixel font. Bold weights are now real weights instead of a synthetic thickening.
 - The Zustand stores moved to `src/store/`, so `src/hooks/` finally contains only hooks.
 
 **Fixed**
+
 - Removed a leftover debug log that fired on every mouse-wheel scroll.
 
 ---
@@ -79,21 +89,25 @@ Naming, licensing and structure.
 The biggest change since the project started: **there are no image files anymore.**
 
 **Added**
+
 - Every block texture is original pixel art declared in TypeScript — a color palette plus a 16×16 grid of characters — drawn onto a canvas when the game starts. Nothing in the repo derives from Mojang's artwork.
 - Tints and overlays are declarative. Grass gets its green from a tint over a grayscale sprite, and its side face layers a real overlay on top of dirt.
 - A loading screen while textures are generated.
 - Adding a new block is now two edits: draw a sprite, add an entry to the block list.
 
 **Changed**
+
 - Textures load asynchronously instead of blocking at import time.
 - All 12 sprites were redrawn after a visual review — stone, cobblestone, planks and the log top were reworked because they read as the wrong material at a glance.
 - Glass no longer dims what's behind it. It's still see-through; it just doesn't tint the view.
 
 **Removed**
+
 - Every Mojang-derived image, including the old favicon and the block metadata JSON files they fed.
 - Dead files and unused imports left over from the old texture system.
 
 **Fixed**
+
 - The grass side overlay, which had been declared in the data but silently never rendered.
 - The ground plane reconfiguring its texture on every render.
 - A typo in a block name (`stone_bicks`).

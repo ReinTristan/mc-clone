@@ -24,7 +24,7 @@ The gallery exists only in `pnpm dev`; the production build contains neither its
 
 No sprite variants. When a block needs to exist in several colors, it is one grayscale sprite plus N tint values, the way Minecraft handles grass. N greens cost zero extra artwork.
 
-This is also why the metadata schema keeps `tint` and `overlays` on the face spec rather than baking color into the sprite: an earlier design tinted the *whole face*, which made "dirt at the bottom, green at the top" impossible on a grass side. The fix was the overlay layer, not more color.
+This is also why the metadata schema keeps `tint` and `overlays` on the face spec rather than baking color into the sprite: an earlier design tinted the _whole face_, which made "dirt at the bottom, green at the top" impossible on a grass side. The fix was the overlay layer, not more color.
 
 ### Grass green is `#6d9e46`
 
@@ -34,7 +34,7 @@ A moss green, chosen by eye against the alternatives and baked into `GRASS_TINT`
 
 Glass keeps `type: 'transparent'` — its `.` pixels are see-through — but it no longer applies `opacity: 0.5`. That looked bad. It is a deliberate choice, not an oversight.
 
-### Sharing a `CanvasTexture` between blocks is safe; sharing *materials* is not verified
+### Sharing a `CanvasTexture` between blocks is safe; sharing _materials_ is not verified
 
 Face composition is cached by `(texture, tint, overlays)`, so faces built from the same spec share one `CanvasTexture`. Verified by hand: breaking one block does not leave the others of the same type black.
 
@@ -116,7 +116,7 @@ One tool for linting, formatting and import organization. `biome.json` is the so
 
 ### MIT covers the code **and** the artwork
 
-`LICENSE.md` is MIT, and it covers both — precisely because the art *is* code. There are no image assets to license separately.
+`LICENSE.md` is MIT, and it covers both — precisely because the art _is_ code. There are no image assets to license separately.
 
 The old pixel font turned out **not** to be a licensing risk, but it was replaced anyway, by preference, with `@fontsource-variable/pixelify-sans` (OFL-1.1). That also removed "Minecraft" from the `font-family`.
 
@@ -132,9 +132,9 @@ A performance claim without a number can be neither accepted nor rejected, and w
 
 **Reference scene:** a new world plus 200 placed blocks, looking at the pile from ~10 blocks away, window maximized. Hardware is recorded because the numbers are only comparable against themselves.
 
-| Version | Scene | Avg FPS | Draw calls | Hardware | Date |
-|---|---|---|---|---|---|
-| — | _reference, before the material cache_ | — | — | — | — |
-| — | _reference, after_ | — | — | — | — |
+| Version | Scene                                  | Avg FPS | Draw calls | Hardware | Date |
+| ------- | -------------------------------------- | ------- | ---------- | -------- | ---- |
+| —       | _reference, before the material cache_ | —       | —          | —        | —    |
+| —       | _reference, after_                     | —       | —          | —        | —    |
 
 The rows are filled by the performance work and closed at 1.0.0.
