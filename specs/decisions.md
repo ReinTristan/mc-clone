@@ -108,7 +108,11 @@ Same stance on block metadata: a flat `tags: string[]` if it is ever needed, and
 
 ### Biome, not ESLint + Prettier
 
-One tool for linting, formatting and import organization. `biome.json` is the source of truth for style, and `.vscode/settings.json` runs it on save.
+One tool for linting, formatting and import organization. `biome.json` is the source of truth for style, and `.vscode/settings.json` runs it on save. Since Biome 2.6 that includes Markdown and YAML, which it formats by default, and the docs follow it rather than opting out.
+
+### Final tags come from the merge into `main`
+
+`.github/workflows/tag-release.yaml` creates `vX.Y.Z` on the merge commit, so a final tag can never be missing from `main` or be forgotten. It only creates tags: it runs no tests and deploys nothing, so the Definition of Done stays manual. Preview tags stay by hand on `dev`.
 
 ---
 
