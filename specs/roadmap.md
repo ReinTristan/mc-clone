@@ -2,13 +2,13 @@
 
 Short horizon on purpose: what is being built now and what comes immediately after. The full plan through 1.0.0 is not public — [CHANGELOG.md](../CHANGELOG.md) is the record of what actually shipped.
 
-**Shipped:** up to `v0.4.5` — a small version before the next theme: three HUD details (block name, save notice and a crosshair visible over anything), and a message when a world can't be saved.
+**Shipped:** up to `v0.5.0` — the first step of the input and performance theme: all input now goes through a single set of listeners, a few input bugs are gone, and the middle mouse button picks the block you're looking at.
 
 ## In progress — 0.5.x · Input and performance
 
-Two things the project has been carrying since early on. The keyboard hook is instantiated twice — once by the player, once by the menus — which means two sets of listeners that can drift apart. And every component subscribes to the entire store, so changing hotbar slot re-renders every block in the world.
+The input half of a debt the project has been carrying since early on is paid: the duplicated keyboard hook is gone. The other half is next: every component subscribes to the entire store, so changing hotbar slot re-renders every block in the world.
 
-Both get fixed before the world engine is touched, because any performance measurement taken with a re-render storm running measures the storm. The same theme also fixes the pause key (today it takes two presses of Escape, because pointer lock swallows the first), adds the first settings screen, and swaps the block material for one without physically-based lighting, measured against a baseline.
+That gets fixed before the world engine is touched, because any performance measurement taken with a re-render storm running measures the storm. The same theme also fixes the pause key (today it takes two presses of Escape, because pointer lock swallows the first), adds the first settings screen, and swaps the block material for one without physically-based lighting, measured against a baseline.
 
 ## Next — 0.6.x · World engine
 

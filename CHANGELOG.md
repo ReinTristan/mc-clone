@@ -8,6 +8,33 @@ All notable changes to MC-Clone, newest first.
 
 ---
 
+## 0.5.0 — 2026-11-07 — Unified input
+
+The controls got rebuilt under the hood. It should play the same as before, minus a few annoying bugs, and the middle mouse button finally does something useful.
+
+**Added**
+
+- The middle mouse button picks the block you're looking at: it jumps to that block's hotbar slot. If the block isn't in the hotbar, it goes in the current slot.
+
+**Changed**
+
+- The middle and side mouse buttons no longer break blocks. Only the left button does.
+
+**Fixed**
+
+- Pressing Esc on the main menu made the next world you entered start with the pause menu open.
+- The mouse wheel and the number keys changed your hotbar slot behind any open menu.
+- Switching to another window while holding a movement key could leave your character walking on its own.
+- Scrolling sideways no longer moves you back one hotbar slot.
+
+**Project**
+
+- All keyboard and wheel input now goes through a single set of listeners, instead of one per component that needed it.
+- Pressing a movement key no longer re-renders the player.
+- 123 tests in the game suite, up from 104, plus 12 for the checker.
+
+---
+
 ## 0.4.5 — 2026-11-06 — Small HUD details
 
 A small one before the next big step: the game now tells you a bit more about what's going on, and the crosshair stops getting lost.
