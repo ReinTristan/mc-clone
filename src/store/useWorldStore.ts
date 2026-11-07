@@ -22,7 +22,10 @@ export interface IWorldStore {
   setToSlot: (slot: number, textureId: number) => void
   hotBarCurrentSlot: number
   setHotBarCurrentSlot: (slot: number) => void
+  cycleHotBarSlot: (dir: number) => void
 }
+
+const HOTBAR_SIZE = 9
 
 export const TOTAL_WORLDS_KEY = 'totalWorlds'
 export const worldKey = (n: number) => `world_${n}`
@@ -125,6 +128,12 @@ export const useWorldStore = create<IWorldStore>()((set, get) => ({
   setHotBarCurrentSlot: (slot) => {
     set(() => ({
       hotBarCurrentSlot: slot,
+    }))
+  },
+  cycleHotBarSlot: (dir) => {
+    set((state) => ({
+      hotBarCurrentSlot:
+        (state.hotBarCurrentSlot + dir + HOTBAR_SIZE) % HOTBAR_SIZE,
     }))
   },
 }))

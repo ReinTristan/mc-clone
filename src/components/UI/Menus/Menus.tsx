@@ -1,10 +1,10 @@
-import { lazy, Suspense, useEffect } from 'react'
+import { lazy, Suspense } from 'react'
 import { BlockName } from '@/components/UI/HUD/BlockName'
 import { HotBar } from '@/components/UI/HUD/HotBar'
 import { HudNotification } from '@/components/UI/HUD/HudNotification'
 import { MainMenu } from '@/components/UI/Menus/MainMenu'
 import { PauseMenu } from '@/components/UI/Menus/PauseMenu'
-import { useKeyboard } from '@/hooks/useKeyboard'
+import { useInputListeners } from '@/hooks/useInputListeners'
 import { useMenuStore } from '@/store/useMenuStore'
 
 // La galería de texturas es una herramienta de dev. En el build de producción
@@ -19,15 +19,8 @@ const Gallery = import.meta.env.DEV
   : null
 
 export function Menus() {
-  const { mainMenu, pauseMenu, textureMenu, setPauseMenu } = useMenuStore(
-    (state) => state
-  )
-  const { pause } = useKeyboard()
-  useEffect(() => {
-    if (pause) {
-      setPauseMenu(!pauseMenu)
-    }
-  }, [pause, setPauseMenu])
+  const { mainMenu, pauseMenu, textureMenu } = useMenuStore((state) => state)
+  useInputListeners()
 
   return (
     <>

@@ -110,6 +110,10 @@ Same stance on block metadata: a flat `tags: string[]` if it is ever needed, and
 
 One tool for linting, formatting and import organization. `biome.json` is the source of truth for style, and `.vscode/settings.json` runs it on save. Since Biome 2.6 that includes Markdown and YAML, which it formats by default, and the docs follow it rather than opting out.
 
+### The pause menu does not freeze the physics
+
+`<Physics isPaused>` was tried and dropped, by preference: pausing stops reading the player's input and moving the camera, and that's all. The physics keep running, so a player who pauses while walking keeps their last velocity until they resume.
+
 ### Final tags come from the merge into `main`
 
 `.github/workflows/tag-release.yaml` creates `vX.Y.Z` on the merge commit, so a final tag can never be missing from `main` or be forgotten. It only creates tags: it runs no tests and deploys nothing, so the Definition of Done stays manual. Preview tags stay by hand on `dev`.

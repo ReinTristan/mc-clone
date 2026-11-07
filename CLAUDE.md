@@ -38,7 +38,7 @@ Vitest in **browser mode** (added in 0.4.2): tests run inside a real headless ch
 - Typechecking them is `tsconfig.test.json` (its own project, `include: ["test"]`, same options as `tsconfig.app.json` plus the `@/*` paths), referenced from `tsconfig.json`. **`pnpm build` runs `tsc -b`, not `tsc`** — the root config is `"files": []` + references, so plain `tsc` checks _nothing at all_ and exits 0. If you ever see that flag drop, the build has stopped typechecking.
 - **Test info are written in English** — the same split as the rest of the repo, where identifiers and UI copy are English and the explanations are Spanish. `pnpm test:run` output should read entirely in English.
 - `render` comes from **`vitest-browser-react/pure`** (not the default entry — only `/pure` exports `configure`, and mixing entries risks two module instances). It is **async**: `const screen = await render(<Foo />)`.
-- `test/setup.ts` enables `reactStrictMode` (matching `main.tsx`) and, before each test, clears `localStorage` and resets both stores — **in that order**, since `totalWorlds` is re-read from storage.
+- `test/setup.ts` enables `reactStrictMode` (matching `main.tsx`) and, before each test, clears `localStorage` and resets the stores — **in that order**, since `totalWorlds` is re-read from storage.
 
 Three rules that cost time to rediscover:
 
@@ -89,12 +89,13 @@ React 19 + `@react-three/fiber` / `drei` / `cannon` (Three.js), Tailwind v4 (via
 
 The app runs under `<StrictMode>`, so effects double-invoke in dev — the cannon `api.*.subscribe` calls in `Player` must keep returning their unsubscribe.
 
-### Two stores drive everything
+### Three stores drive everything
 
-- `useMenuStore` — which UI layer is up (`mainMenu`, `pauseMenu`, `textureMenu`). This gates the 3D scene: `GameScene` renders the `<Canvas>` and `<Sky>` always, but only mounts `<Physics>`, `Ground`, `Player`, `Cubes`, and pointer-lock (`Fvp`) when `mainMenu` is false. `pauseMenu` also short-circuits `Player`'s `useFrame` and unmounts `PointerLockControls`.
+- `useMenuStore` — which UI layer is up (`mainMenu`, `pauseMenu`, `textureMenu`). This gates the 3D scene: `GameScene` renders the `<Canvas>` and `<Sky>` always, but only mounts `<Physics>`, `Ground`, `Player`, `Cubes`, and pointer-lock (`Fvp`) when `mainMenu` is false. `pauseMenu` also short-circuits `Player`'s `useFrame` and unmounts `PointerLockControls`; the physics keep running during the pause.
 - `useWorldStore` — the world (`cubes: ICube[]`), the current save slot, and the hotbar (`slots`, `hotBarCurrentSlot`).
+- `useInputStore` — which movement keys are held. Read with `getState()` inside `useFrame`, never subscribed to, so a key press re-renders nothing.
 
-Both are read as `useStore((state) => state)` throughout, i.e. components subscribe to the whole store.
+The menu and world stores are mostly read as `useStore((state) => state)`, i.e. components subscribe to the whole store.
 
 ### Save format
 
@@ -120,9 +121,9 @@ Face composition is cached by `(texture, tint, overlays)`, so faces sharing a sp
 
 ### Input and block interaction
 
-`useKeyboard` maps `KeyW/A/S/D`, `Space`, `Escape` to a boolean action object and `Digit1`–`Digit9` / mouse wheel directly to `setHotBarCurrentSlot`. It's called independently by `Player` and `Menus`, so each caller gets its own listener pair and its own `actions` state — the `pause` action is edge-detected in a `Menus` effect, which is why the HUD says "Double Esc to pause" (pointer lock swallows the first Escape).
+`src/store/useInputStore.ts` owns the only input listeners, on `window`. `Player` and `Menus` both call `useInputListeners()`, and `attachInput()` counts consumers: the first one registers the listeners, the last one removes them. `KeyW/A/S/D` and `Space` set booleans in the store; held keys are released on window `blur` and when the pause opens. `Digit1`–`Digit9` and the wheel (`cycleHotBarSlot`, direction in `WHEEL_SLOT_DIRECTION`) only act with no menu open. `Escape` toggles the pause directly, ignoring key repeat and doing nothing on the main menu. The HUD says "Double Esc to pause" because pointer lock swallows the first Escape.
 
-Placement/removal is handled per-mesh in `Cube.tsx` and `Ground.tsx` via `onPointerDown`: `e.button === 2` (right click) places the block in `slots[hotBarCurrentSlot]`, anything else removes. `Cube` derives the neighbouring cell from `Math.floor(e.faceIndex / 2)` (12 box triangles → 6 faces) looked up in `FACE_DIRECTION_VALUES`; `Ground` uses `Math.ceil` on the intersection point. Every cube is its own `useBox` static body and rebuilds its six `MeshStandardMaterial`s on each render, which is the main scaling limit of the current design.
+Placement/removal is handled per-mesh in `Cube.tsx` and `Ground.tsx` via `onPointerDown`. On a cube, button `0` removes it, `1` picks it (selects its slot if it's already in the hotbar, otherwise puts it in the current slot, so picking never loses a block while there's no inventory) and `2` places the block in that slot next to it; other buttons do nothing. `Ground` only reacts to `2`. `Cube` derives the neighbouring cell from `Math.floor(e.faceIndex / 2)` (12 box triangles → 6 faces) looked up in `FACE_DIRECTION_VALUES`; `Ground` uses `Math.ceil` on the intersection point. Every cube is its own `useBox` static body and rebuilds its six `MeshStandardMaterial`s on each render, which is the main scaling limit of the current design.
 
 ### HUD messages
 

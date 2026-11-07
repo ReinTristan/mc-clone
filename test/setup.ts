@@ -3,6 +3,7 @@ import { afterEach, beforeEach } from 'vitest'
 // con el entry por defecto arriesga dos instancias del módulo, y entonces el
 // `reactStrictMode` de abajo se aplicaría a una config que nadie lee.
 import { cleanup, configure } from 'vitest-browser-react/pure'
+import { useInputStore } from '@/store/useInputStore'
 import { useMenuStore } from '@/store/useMenuStore'
 import { readTotalWorlds, useWorldStore } from '@/store/useWorldStore'
 
@@ -15,7 +16,7 @@ import { readTotalWorlds, useWorldStore } from '@/store/useWorldStore'
 configure({ reactStrictMode: true })
 
 /**
- * Los dos stores son singletons a nivel de módulo: se crean una vez por página
+ * Los stores son singletons a nivel de módulo: se crean una vez por página
  * y sobreviven a todos los tests del archivo. Por eso el reset va aquí y no en
  * cada test.
  *
@@ -37,6 +38,7 @@ beforeEach(() => {
     textureMenu: false,
     notification: null,
   })
+  useInputStore.getState().reset()
 })
 
 afterEach(async () => {

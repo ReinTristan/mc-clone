@@ -2,14 +2,20 @@ import { useSphere } from '@react-three/cannon'
 import { useFrame, useThree } from '@react-three/fiber'
 import { useEffect, useRef } from 'react'
 import { Mesh, Vector3 } from 'three'
-import { useKeyboard } from '@/hooks/useKeyboard'
+import { useInputListeners } from '@/hooks/useInputListeners'
+import { useInputStore } from '@/store/useInputStore'
 import { useMenuStore } from '@/store/useMenuStore'
 
 const CHARACTER_SPEED = 5
 const CHARACTER_JUMP_FORCE = 5
+
+// Reutilizados entre frames para no generar basura en cada uno.
+const direction = new Vector3()
+const frontVector = new Vector3()
+const sideVector = new Vector3()
+
 export const Player = () => {
-  const { moveForward, moveBackward, moveLeft, moveRight, jump } = useKeyboard()
-  const { pauseMenu } = useMenuStore((state) => state)
+  useInputListeners()
   const { camera } = useThree()
   const [ref, api] = useSphere<Mesh>(() => ({
     mass: 1,
@@ -41,23 +47,14 @@ export const Player = () => {
   }, [api.rotation])
 
   useFrame(() => {
-    if (pauseMenu) return
-    camera.position.copy(
-      new Vector3(pos.current[0], pos.current[1] + 1, pos.current[2])
-    )
+    if (useMenuStore.getState().pauseMenu) return
+    camera.position.set(pos.current[0], pos.current[1] + 1, pos.current[2])
 
+    const { moveForward, moveBackward, moveLeft, moveRight, jump } =
+      useInputStore.getState()
     const appliedRotation = camera.rotation
-    const direction = new Vector3()
-    const frontVector = new Vector3(
-      0,
-      0,
-      (moveBackward ? 1 : 0) - (moveForward ? 1 : 0)
-    )
-    const sideVector = new Vector3(
-      (moveLeft ? 1 : 0) - (moveRight ? 1 : 0),
-      0,
-      0
-    )
+    frontVector.set(0, 0, (moveBackward ? 1 : 0) - (moveForward ? 1 : 0))
+    sideVector.set((moveLeft ? 1 : 0) - (moveRight ? 1 : 0), 0, 0)
     direction
       .subVectors(frontVector, sideVector)
       .normalize()
