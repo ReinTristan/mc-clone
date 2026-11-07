@@ -1,7 +1,7 @@
 {
   "name": "mc-clone",
   "private": true,
-  "version": "0.4.4",
+  "version": "0.4.5",
   "type": "module",
   "scripts": {
     "dev": "vite --host",
@@ -25,6 +25,7 @@
     "react": "^19.3.1",
     "react-dom": "^19.3.1",
     "serve": "^14.2.6",
+    "tailwind-animations": "^1.0.2",
     "tailwindcss": "^4.3.4",
     "three": "^0.187.0",
     "zustand": "5.0.16"

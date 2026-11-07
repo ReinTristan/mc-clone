@@ -1,4 +1,5 @@
 @import "tailwindcss";
+@import "tailwind-animations";
 @import "@fontsource-variable/pixelify-sans";
 
 @theme {

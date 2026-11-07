@@ -1,9 +1,11 @@
 import { lazy, Suspense, useEffect } from 'react'
+import { BlockName } from '@/components/UI/HUD/BlockName'
+import { HotBar } from '@/components/UI/HUD/HotBar'
+import { HudNotification } from '@/components/UI/HUD/HudNotification'
 import { MainMenu } from '@/components/UI/Menus/MainMenu'
 import { PauseMenu } from '@/components/UI/Menus/PauseMenu'
 import { useKeyboard } from '@/hooks/useKeyboard'
 import { useMenuStore } from '@/store/useMenuStore'
-import { HotBar } from '../HUD/HotBar'
 
 // La galería de texturas es una herramienta de dev. En el build de producción
 // Vite reemplaza `import.meta.env.DEV` por `false`, la rama muere y el
@@ -34,7 +36,9 @@ export function Menus() {
           <span className='absolute top-8 left-8 font-bold text-5xl'>
             Double Esc to pause
           </span>
+          <BlockName />
           <HotBar />
+          <HudNotification />
           {pauseMenu && <PauseMenu />}
         </>
       )}
