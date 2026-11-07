@@ -35,6 +35,7 @@ beforeEach(() => {
     mainMenu: true,
     pauseMenu: false,
     textureMenu: false,
+    notification: null,
   })
 })
 

@@ -8,6 +8,30 @@ All notable changes to MC-Clone, newest first.
 
 ---
 
+## 0.4.5 — 2026-11-06 — Small HUD details
+
+A small one before the next big step: the game now tells you a bit more about what's going on, and the crosshair stops getting lost.
+
+**Added**
+
+- Switching hotbar slots shows the name of the block above the hotbar for a moment.
+- Saving a world now confirms it with a brief "World saved" message.
+
+**Changed**
+
+- The crosshair is white with a dark outline, so you can see it over any block and over the sky.
+
+**Fixed**
+
+- When a world couldn't be saved, for example because browser storage was full, nothing told you. Now you get "Could not save world", the pause menu stays open, and your last save is kept.
+
+**Project**
+
+- The HUD animations come from `tailwind-animations`.
+- 104 tests in the game suite, up from 93.
+
+---
+
 ## 0.4.4 — 2026-10-28 — Cleanup
 
 Housekeeping before the next big step. One thing you'll notice: the frame-rate panel in the corner is gone.
@@ -214,6 +238,13 @@ First playable version — the voxel sandbox from the [freeCodeCamp](https://git
 ## Project and tooling
 
 Changes to how the project is built and planned. Nothing here affects the game, and none of it belongs to a version — these land whenever they land, newest first.
+
+### 2026-11-05 — Dependency update and automatic tags
+
+- `package.json`, `pnpm-lock.yaml` — every dependency moved to its latest version, including a new major version of the test runner.
+- `.github/workflows/tag-release.yaml` — the tag of each final version is now created automatically when its pull request merges into `main`.
+- `specs/workflow.md` — describes that new step of the release.
+- `biome.json` and the docs — Biome now formats Markdown and YAML too, so the docs got a cosmetic pass.
 
 ### 2026-10-25 — pnpm 12 and a Node security floor
 

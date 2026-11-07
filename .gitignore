@@ -30,6 +30,7 @@ dist-ssr
 # vitest
 __screenshots__
 .vitest-attachments
+.vitest/*
 
 # planning
 # The methodology rules (specs/*.md) are committed; plan for every version don't.

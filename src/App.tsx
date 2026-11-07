@@ -1,10 +1,10 @@
 import { type ReactNode, Suspense, use } from 'react'
 import { GameScene } from '@/components/GameScene'
+import { Info } from '@/components/UI/HUD/Info'
 import { LoadingScreen } from '@/components/UI/LoadingScreen'
 import { Menus } from '@/components/UI/Menus/Menus'
 import { loadAllTextures } from '@/lib/textures/registry'
 import { useMenuStore } from '@/store/useMenuStore'
-import { Info } from './components/UI/HUD/Info'
 
 /**
  * Suspende hasta que el registry haya compuesto todas las texturas. Nada se

@@ -18,13 +18,15 @@ pnpm spec:check # cross specs/versions/'s acceptance criteria against the tests 
 pnpm spec:test  # the checker's own tests (node --test, not vitest) — added in 0.4.4
 ```
 
-Biome (not ESLint/Prettier) is the only linter/formatter; `biome.json` is the source of truth for style — read it instead of guessing. `.vscode/settings.json` runs it on save with `source.fixAll.biome` and `source.organizeImports.biome`.
+Biome (not ESLint/Prettier) is the only linter/formatter, Markdown and YAML included since 2.6; `biome.json` is the source of truth for style — read it instead of guessing. `.vscode/settings.json` runs it on save with `source.fixAll.biome` and `source.organizeImports.biome`.
 
 **Run `pnpm biome` after creating or editing any file.** Formatting differences are not editor diagnostics, so a misformatted file looks clean until someone saves it in VS Code and gets a whole-file diff.
 
 `pnpm-workspace.yaml` sets `minimumReleaseAge: 1440` (packages must be 24h old before install), pinned security `overrides`, and `onlyBuiltDependencies` (pnpm blocks install scripts by default; `playwright` needs its own to resolve browsers). Keep all three in mind when adding or bumping dependencies.
 
 **`pnpm-lock.yaml` must match `package.json` in every commit.** The Railway deploy installs with `--frozen-lockfile` (pnpm enables it by default in CI), so a stale lockfile fails the deploy with `ERR_PNPM_FROZEN_LOCKFILE_WITH_OUTDATED_LOCKFILE`. Since pnpm 12 the lockfile also records pnpm itself (a `packageManagerDependencies` document at the top), so **changing `packageManager` is a lockfile change too**. That's what broke the 0.4.3 deploy: a hotfix bumped pnpm 11 → 12.15 in `package.json` only. After touching dependencies, `packageManager` or overrides, run `pnpm install` and commit the lockfile with it; `pnpm install --frozen-lockfile` locally is the check (Definition of Done step 11).
+
+**Final tags are not made by hand.** `.github/workflows/tag-release.yaml` reads `version` from `package.json` when a PR merges into `main` and creates `vX.Y.Z` on the merge commit, with the PR title as its message. The bump has to travel inside the PR: without it, the workflow sees the tag already exists and does nothing. Preview tags stay manual, on `dev`.
 
 ## Testing
 
@@ -121,3 +123,11 @@ Face composition is cached by `(texture, tint, overlays)`, so faces sharing a sp
 `useKeyboard` maps `KeyW/A/S/D`, `Space`, `Escape` to a boolean action object and `Digit1`–`Digit9` / mouse wheel directly to `setHotBarCurrentSlot`. It's called independently by `Player` and `Menus`, so each caller gets its own listener pair and its own `actions` state — the `pause` action is edge-detected in a `Menus` effect, which is why the HUD says "Double Esc to pause" (pointer lock swallows the first Escape).
 
 Placement/removal is handled per-mesh in `Cube.tsx` and `Ground.tsx` via `onPointerDown`: `e.button === 2` (right click) places the block in `slots[hotBarCurrentSlot]`, anything else removes. `Cube` derives the neighbouring cell from `Math.floor(e.faceIndex / 2)` (12 box triangles → 6 faces) looked up in `FACE_DIRECTION_VALUES`; `Ground` uses `Math.ceil` on the intersection point. Every cube is its own `useBox` static body and rebuilds its six `MeshStandardMaterial`s on each render, which is the main scaling limit of the current design.
+
+### HUD messages
+
+Transient HUD text (`BlockName`, `HudNotification`) fades with `animate-fade-out` + `animate-delay-*` from `tailwind-animations`, with no timers or local state: each new message is a new `key`, which remounts the element and restarts the animation.
+
+To show a message from anywhere, call `useMenuStore`'s `notify(message)`. There is one message at a time, and a new one replaces the current one. `notification` lives in the menu store so saving doesn't notify the cubes, and `setMainMenu` clears it so re-entering a world doesn't replay it. `BlockName` stays separate because its text comes from the current slot, not from an event.
+
+Tests of these animations must `import '@/index.css'`, since `test/setup.ts` loads no styles.

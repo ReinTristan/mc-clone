@@ -2,7 +2,7 @@
 
 Short horizon on purpose: what is being built now and what comes immediately after. The full plan through 1.0.0 is not public — [CHANGELOG.md](../CHANGELOG.md) is the record of what actually shipped.
 
-**Shipped:** up to `v0.4.4` — a cleanup pass that closed the foundations line: dead dependencies gone, the debug performance panel kept out of the menu and the production build, and tests for the spec checker itself.
+**Shipped:** up to `v0.4.5` — a small version before the next theme: three HUD details (block name, save notice and a crosshair visible over anything), and a message when a world can't be saved.
 
 ## In progress — 0.5.x · Input and performance
 
