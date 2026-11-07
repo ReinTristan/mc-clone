@@ -16,9 +16,14 @@ const FACE_DIRECTION_VALUES = {
   face5: [0, 0, -1],
 } as const
 export const Cube = ({ id, pos: position, textureId }: ICube) => {
-  const { removeCube, addCube, slots, hotBarCurrentSlot } = useWorldStore(
-    (state) => state
-  )
+  const {
+    removeCube,
+    addCube,
+    setToSlot,
+    setHotBarCurrentSlot,
+    slots,
+    hotBarCurrentSlot,
+  } = useWorldStore((state) => state)
   const [isHovered, setIsHovered] = useState(false)
   const [ref] = useBox<Mesh>(() => ({
     type: 'Static',
@@ -40,6 +45,21 @@ export const Cube = ({ id, pos: position, textureId }: ICube) => {
   )
   const handleClick = (e: ThreeEvent<MouseEvent>) => {
     e?.stopPropagation()
+    if (e.button === 0) {
+      removeCube(id)
+      return
+    }
+    if (e.button === 1) {
+      // Si ya está en la hotbar solo se salta a su slot: reemplazar el actual
+      // perdería ese bloque, y sin inventario no habría cómo recuperarlo.
+      const slotWithBlock = slots.indexOf(textureId)
+      if (slotWithBlock === -1) {
+        setToSlot(hotBarCurrentSlot, textureId)
+      } else {
+        setHotBarCurrentSlot(slotWithBlock)
+      }
+      return
+    }
     if (e.button === 2) {
       const faceIndex = e.faceIndex ?? 1
       const clickedFace = Math.floor(faceIndex / 2)
@@ -55,9 +75,7 @@ export const Cube = ({ id, pos: position, textureId }: ICube) => {
       const textureId = slots[hotBarCurrentSlot]
       if (!textureId) return
       addCube({ pos: fullPosition, textureId })
-      return
     }
-    removeCube(id)
   }
   return (
     <mesh
